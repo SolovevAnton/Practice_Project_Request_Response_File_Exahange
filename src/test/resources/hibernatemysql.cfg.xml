@@ -15,5 +15,6 @@
 
 
         <mapping class="com.solovev.model.User" />
+        <mapping class="com.solovev.model.UserFiles" />
     </session-factory>
 </hibernate-configuration>

@@ -2,6 +2,7 @@ package com.solovev;
 
 import com.solovev.dao.SessionFactorySingleton;
 import com.solovev.model.User;
+import com.solovev.model.UserFiles;
 import lombok.AccessLevel;
 import lombok.Getter;
 
@@ -21,6 +22,7 @@ public class DBSetUpAndTearDown {
     @Getter(AccessLevel.NONE)
     private Connection connection;
     private final String USERS_TABLE_NAME = User.class.getAnnotation(Table.class).name();
+    private final String FILES_TABLE_NAME = UserFiles.class.getAnnotation(Table.class).name();
 
 
     /**
@@ -75,7 +77,21 @@ public class DBSetUpAndTearDown {
 
         return resultSet.next() ? resultSet.getLong(1) : 0;
     }
+    public void setUpFilesTableValues(Collection<UserFiles> files) throws SQLException {
+        long currentMaxId = getLastId(FILES_TABLE_NAME);
+        String SQL = "INSERT INTO " + FILES_TABLE_NAME + "(fileName,serverFileName,user_id) values(?,?,?)";
+        try (PreparedStatement statement = connection.prepareStatement(SQL)) {
+            for (UserFiles file : files) {
+                statement.setString(1, file.getFileName());
+                statement.setString(2, file.getServerFileName());
+                statement.setLong(3, file.getUser().getId());
 
+                statement.addBatch();
+                file.setId(++currentMaxId);
+            }
+            statement.executeBatch();
+        }
+    }
     public void clearTable(String tableName) throws SQLException {
         String sqlDelete = "DELETE FROM " + tableName;
         executeStatement(sqlDelete);
@@ -88,7 +104,7 @@ public class DBSetUpAndTearDown {
     }
 
     private void dropAllTables() throws SQLException {
-        String[] tableNames = {USERS_TABLE_NAME};
+        String[] tableNames = {FILES_TABLE_NAME,USERS_TABLE_NAME}; //order is important!
         String dropTableSQL = "DROP TABLE IF EXISTS ";
 
         for (String tableName : tableNames) {
