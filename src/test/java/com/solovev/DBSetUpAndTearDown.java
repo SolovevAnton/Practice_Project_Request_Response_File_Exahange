@@ -2,7 +2,7 @@ package com.solovev;
 
 import com.solovev.dao.SessionFactorySingleton;
 import com.solovev.model.User;
-import com.solovev.model.UserFiles;
+import com.solovev.model.UserFile;
 import lombok.AccessLevel;
 import lombok.Getter;
 
@@ -22,7 +22,7 @@ public class DBSetUpAndTearDown {
     @Getter(AccessLevel.NONE)
     private Connection connection;
     private final String USERS_TABLE_NAME = User.class.getAnnotation(Table.class).name();
-    private final String FILES_TABLE_NAME = UserFiles.class.getAnnotation(Table.class).name();
+    private final String FILES_TABLE_NAME = UserFile.class.getAnnotation(Table.class).name();
 
 
     /**
@@ -77,11 +77,11 @@ public class DBSetUpAndTearDown {
 
         return resultSet.next() ? resultSet.getLong(1) : 0;
     }
-    public void setUpFilesTableValues(Collection<UserFiles> files) throws SQLException {
+    public void setUpFilesTableValues(Collection<UserFile> files) throws SQLException {
         long currentMaxId = getLastId(FILES_TABLE_NAME);
         String SQL = "INSERT INTO " + FILES_TABLE_NAME + "(file_name,server_file_name,user_id) values(?,?,?)";
         try (PreparedStatement statement = connection.prepareStatement(SQL)) {
-            for (UserFiles file : files) {
+            for (UserFile file : files) {
                 statement.setString(1, file.getFileName());
                 statement.setString(2, file.getServerFileName());
                 statement.setLong(3, file.getUser().getId());

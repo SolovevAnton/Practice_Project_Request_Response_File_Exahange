@@ -2,8 +2,6 @@ package com.solovev.model;
 
 import com.solovev.dto.DTO;
 import lombok.*;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 
@@ -15,7 +13,7 @@ import javax.persistence.*;
 @NoArgsConstructor(force = true)
 @AllArgsConstructor
 @RequiredArgsConstructor
-public class UserFiles implements DTO {
+public class UserFile implements DTO {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -32,7 +30,7 @@ public class UserFiles implements DTO {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    public UserFiles(@NonNull String fileName, String serverFileName, User user) {
+    public UserFile(@NonNull String fileName, String serverFileName, User user) {
         this.fileName = fileName;
         this.serverFileName = serverFileName;
         this.user = user;
