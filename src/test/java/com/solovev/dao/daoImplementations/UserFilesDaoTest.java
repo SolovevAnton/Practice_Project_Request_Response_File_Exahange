@@ -22,6 +22,19 @@ class UserFilesDaoTest {
     public void getAll(){
         assertEquals(FILES,userFilesDao.get());
     }
+    @Test
+    public void serverNameConfiguration(){
+        int expectedId = FILES.size() + 1;
+        UserFiles fileToAdd = new UserFiles("added.exe",USERS.get(0));
+        UserFiles expectedOutcome = new UserFiles(expectedId,fileToAdd.getFileName(),expectedId + ".exe",USERS.get(0));
+
+        assertFalse(userFilesDao.get().contains(fileToAdd));
+        assertFalse(userFilesDao.get().contains(expectedOutcome));
+
+        assertTrue(userFilesDao.add(fileToAdd));
+        assertEquals(expectedOutcome,userFilesDao.get(expectedId).get());
+        assertEquals(expectedOutcome,fileToAdd);
+    }
     @Nested
     public class ConstraintsViolation{
         @Test
