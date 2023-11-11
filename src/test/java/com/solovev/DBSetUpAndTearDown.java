@@ -79,7 +79,7 @@ public class DBSetUpAndTearDown {
     }
     public void setUpFilesTableValues(Collection<UserFiles> files) throws SQLException {
         long currentMaxId = getLastId(FILES_TABLE_NAME);
-        String SQL = "INSERT INTO " + FILES_TABLE_NAME + "(fileName,serverFileName,user_id) values(?,?,?)";
+        String SQL = "INSERT INTO " + FILES_TABLE_NAME + "(file_name,server_file_name,user_id) values(?,?,?)";
         try (PreparedStatement statement = connection.prepareStatement(SQL)) {
             for (UserFiles file : files) {
                 statement.setString(1, file.getFileName());
