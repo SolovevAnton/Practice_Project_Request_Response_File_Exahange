@@ -74,7 +74,7 @@ public class FileServlet extends HttpServlet {
                 if(fileParam != null){
                     filesData = fileSupplier.getFile(userId,fileParam);
                 } else{
-                    filesData =new byte[]{};
+                    filesData = fileSupplier.getFile(userId);
                 }
 
                 resp.setContentLength(filesData.length);
