@@ -5,7 +5,6 @@ import com.solovev.dao.daoImplementations.UserFileDao;
 import com.solovev.model.User;
 import com.solovev.model.UserFile;
 import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileUploadException;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -17,6 +16,7 @@ public class UserIdAndItsFileItems {
     private static final String USER_ID_PARAMETER_NAME = "userId";
     private static final String NO_USER_ID_MSG = "No user id provided";
     private static final String NO_USER_WITH_THIS_ID_MSG = "No user with this ID found";
+    private static final String NO_FILE_PROVIDED = "No files were provided";
     private final AtomicReference<UserFileDao> fileDao = new AtomicReference<>(new UserFileDao());
     private final AtomicReference<UserDao> userDao = new AtomicReference<>(new UserDao());
     private Long userId;
@@ -35,15 +35,32 @@ public class UserIdAndItsFileItems {
         }
     }
 
-    public void saveAllUserFiles(File pathToContentDirectory) throws Exception {
-        if (isUserIdNull()) {
-            throw new IllegalArgumentException(NO_USER_ID_MSG);
-        }
+    /**
+     *
+     * @param pathToContentDirectory directory to save files to
+     * @return message about all saved files
+     * @throws Exception
+     */
+    public String saveAllUserFiles(File pathToContentDirectory) throws Exception {
+        validateSaveConditionsOrThrow();
+        StringBuilder message = new StringBuilder();
         for (FileItem item : fileItems) {
             UserFile userFile = createUserFileEntry(userId, item);
             fileDao.get().add(userFile);
             File fileToSave = new File(pathToContentDirectory, userFile.getServerFileName());
             item.write(fileToSave);
+
+            message.append(String.format("File named: %s was saved for user ID: %d\n",userFile.getFileName(),userFile.getUser().getId()));
+        }
+        return message.toString();
+    }
+
+    private void validateSaveConditionsOrThrow() {
+        if (isUserIdNull()) {
+            throw new IllegalArgumentException(NO_USER_ID_MSG);
+        }
+        if(fileItems.isEmpty()){
+            throw new IllegalArgumentException(NO_FILE_PROVIDED);
         }
     }
 

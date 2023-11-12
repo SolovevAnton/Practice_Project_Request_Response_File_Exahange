@@ -6,9 +6,9 @@
 </head>
 <body>
 
-<form method="POST" enctype="multipart/form-data" action="/files">
-    File to upload: <input type="file" name="upfile"><br/>
-    User Id: <input type="text" name="note"><br/>
+<form method="POST" enctype="multipart/form-data" action="files">
+    File to upload: <input type="file" name="upfile" required><br/>
+    User Id: <input type="number" name="userId" required><br/>
     <br/>
     <input type="submit" value="Press"> to upload the file!
 </form>

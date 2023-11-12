@@ -1,12 +1,7 @@
 package com.solovev.servlet;
 
-import com.solovev.dao.daoImplementations.UserDao;
-import com.solovev.dao.daoImplementations.UserFileDao;
-import com.solovev.model.User;
-import com.solovev.model.UserFile;
 import com.solovev.service.UserIdAndItsFileItems;
 import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
@@ -18,8 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.List;
+import java.util.Objects;
 
 @WebServlet("/files")
 public class FileServlet extends HttpServlet {
@@ -39,7 +34,8 @@ public class FileServlet extends HttpServlet {
                 List<FileItem> fileItems = createServletFileUploadHandler().parseRequest(req);
                 if (Objects.nonNull(fileItems)) {
                     UserIdAndItsFileItems userIdAndItsFileItems = new UserIdAndItsFileItems(fileItems);
-                    userIdAndItsFileItems.saveAllUserFiles(pathToContentDirectory);
+                    String message  = userIdAndItsFileItems.saveAllUserFiles(pathToContentDirectory);
+                    writer.println(message);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
